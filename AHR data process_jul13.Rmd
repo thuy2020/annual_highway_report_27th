@@ -1,6 +1,11 @@
 ---
 title: "Annual Highway Report - Data Analysis"
-output: html_document
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    toc_depth: 3
 date: '2022-07-14'
 ---
 
@@ -42,7 +47,7 @@ head(HM_10)
 * Indexing the above 2 percentages against national levels
 
 This approach is inspired by the [California Policy Center report](https://californiapolicycenter.org/californias-transportation-future-part-four-the-common-road/), which argues that: 
-**"The idea that road construction costs more in urban areas can be attributed to several interrelated factors: Land values are typically greater in densely populated areas. Construction challenges are greater in urban areas where it is more likely that existing structures may have to be acquired and demolished to permit road construction or widening. Labor costs are typically higher in urban areas. Urbanized regions also are likely to have more local restrictions on development, leading to more costly permitting processes and higher fees. There are other key factors influencing road construction costs – for example, climate and topography – but urbanization is easily quantifiable and likely the most significant of them."**
+*"The idea that road construction costs more in urban areas can be attributed to several interrelated factors: Land values are typically greater in densely populated areas. Construction challenges are greater in urban areas where it is more likely that existing structures may have to be acquired and demolished to permit road construction or widening. Labor costs are typically higher in urban areas. Urbanized regions also are likely to have more local restrictions on development, leading to more costly permitting processes and higher fees. There are other key factors influencing road construction costs – for example, climate and topography – but urbanization is easily quantifiable and likely the most significant of them."*
 
 However, it seems that the report got mixed up between "total lane miles" and daily miles travelled. We present here both ways of using lane miles and dmt for discussion. 
 
@@ -131,14 +136,14 @@ SF_4_adjusted <- SF_4 %>%
 
 Examples of how capital_disbursement is adjusted in 10 states that have highest/lowest capital_disbursement 
 
-```{r, fig.width=3}
+```{r}
 SF_4_adjusted %>% arrange(desc(capital_disbursement)) %>% slice(1:10) %>% 
   select(state, capital_disbursement, capital_disbursement_coli_index, capital_disbursement_urban_dvmt_index, capital_disbursement_urban_lanemiles_index) %>% 
   pivot_longer(cols = 2:5, names_to = "type_disburment", values_to = "value") %>% 
   ggplot(aes(state, value, group = type_disburment, fill = type_disburment)) +
   geom_col(position = "dodge") +
-
-  scale_fill_manual(values = wesanderson::wes_palette("Royal1")) +
+  coord_flip() +
+  scale_fill_manual(values = wesanderson::wes_palette("Cavalcanti1")) +
   theme_minimal()+
   labs(title = "Top 10 states that have highest capital_disbursement") +
   
@@ -151,11 +156,11 @@ SF_4_adjusted %>% arrange(capital_disbursement) %>% slice(1:10) %>%
   pivot_longer(cols = 2:5, names_to = "type_disburment", values_to = "value") %>% 
   ggplot(aes(state, value, group = type_disburment, fill = type_disburment)) +
   geom_col(position = "dodge") +
-
-  scale_fill_manual(values = wesanderson::wes_palette("Royal1")) +
+  coord_flip() +
+scale_fill_manual(values = wesanderson::wes_palette("Cavalcanti1")) +
     labs(title = "10 states that have lowest capital_disbursement") +
   theme_minimal()+
-    theme(legend.position = "bottom",
+    theme(legend.position = "right",
         axis.text.x = element_text(angle = 30, vjust = 1, hjust=1)) 
 ```
   
@@ -235,10 +240,14 @@ head(HM64)
 # FI-20: Persons fatally injured in motor vehicle crashes
 
 Including:
-* Rural fatality category,  and urban fatality categories with each measuring fatalities on Interstates, OFA, and OPE highways.
-* total
+
+* Rural interstate, OFA, OPE, total
+* urban interstate, OFA, OPE, total
+* total fatality
 * rural_other_fatalities: sum of minor arterials, minor collector, major collector, and local roads in rural
 * urban_other_fatalities: sum of minor arterials, minor collector, major collector, and local roads in urban
+
+Note: the last 2 are included in total of rural and urban already. 
 
 ```{r}
 
@@ -269,10 +278,10 @@ head(FI_20)
 
 # VM-2: Annual vehicle miles
 
-NOTE: VM2 file says unit = millions, should be thousand? --> currently multiple each columns * 1000
+NOTE: VM2 file says unit = millions, should be thousand? --> currently multiple each columns by 1000
 
-rural_other_VMT: sum of minor arterials, minor collector, major collector, and local roads in rural
-urban_other_VMT: sum of minor arterials, minor collector, major collector, and local roads in urban
+* rural_other_VMT: sum of minor arterials, minor collector, major collector, and local roads in rural
+* urban_other_VMT: sum of minor arterials, minor collector, major collector, and local roads in urban
 
 ```{r}
 VM_2 <- read_excel("data/vm2.xls", sheet = "A") %>% 
@@ -300,6 +309,7 @@ head(VM_2)
 ```
 
 # Bridge data
+
 ```{r}
 bridge_raw <- read_excel("data/fccount21.xlsx", sheet = "2021")  
 
@@ -442,7 +452,6 @@ head(congestion_data)
 The combined data has the following components: 
 
 ```{r}
-
 AHR_states <- list(HM_10, 
                  HM_81, 
                  SF_4_adjusted, 
@@ -460,7 +469,7 @@ AHR_national <- AHR_states %>%
 
 AHR_data <- bind_rows(AHR_states, AHR_national)
 
-colnames(AHR_data)
+#colnames(AHR_data)
 ```
 
 ## Disbursement Adjustment & Its Effects 
@@ -546,6 +555,7 @@ disbursment_adjusted %>% arrange(capital_disbursement) %>% slice(1:10) %>%
 ```
 
 ## Other 9 Metrics
+
 ```{r}
 metrics_9others <- AHR_data %>%   
   # SHA ratio
@@ -570,11 +580,10 @@ metrics_9others <- AHR_data %>%
 head(metrics_9others)
 ```
 
-## Calculate overall scores
+# Calculate overall scores
 
 With 3 new ways of disbursement adjusting, plus a case when disbursement is kept raw, we have 4 results. Choosing which one is a subject for further considerations. 
 
-## Method 0: Not adjusting for disbursement
 
 ```{r}
 ## Method 0: Not adjusting for disbursement
@@ -660,7 +669,8 @@ ranking_data <- method0 %>% left_join(method1) %>% left_join(method2) %>% left_j
 head(metrics_9others)
 ```
 
-# Viewing differences in ranking 
+## Viewing differences in ranking 
+
 ```{r}
 library(patchwork)
 
@@ -684,6 +694,7 @@ ranking_data %>% slice(51:100) %>%
 
 
 ```
+
 # Letter rating 
 
 We're aware that ranking is quite sensitive to different choices of methodology. One option worth consideration is using letter rating instead of numeric ranking. 
@@ -705,6 +716,7 @@ final_ranking_letters <- ranking_data %>% arrange(state) %>%
               values_from = value)
 
 write.csv(final_ranking_letters, "final_ranking_letters.csv")
+
 ```
 
 
