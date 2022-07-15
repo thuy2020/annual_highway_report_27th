@@ -4,8 +4,11 @@ library(janitor)
 library(stringr)
 library(modelr)
 library(rio)
+#########
+#NOTE: This file is from Truong's Github, as of June 28, using solve_delay function to solve for delay
+###########
 
-umr_2020 <- import("complete-data-2021-umr-by-tti.xlsx", sheet = "urban areas")
+umr_2020 <- import("data/Copy of complete-data-2021-umr-by-tti.xlsx", sheet = "urban areas")
 vehicle_miles_data <- read_excel("data/HM-74 Daily Vehicle Miles Travelled.xlsx", sheet = "Sheet1")
 
 
@@ -53,10 +56,10 @@ umr_2020_clean <- umr_2020 %>%
          first_city = str_split(city, "-", simplify = T)[,1],
          second_city = str_split(city, "-", simplify = T)[,2],
          third_city = str_split(city, "-", simplify = T)[,3]
-         ) %>% 
+  ) %>% 
   select(first_city, first_state, auto_commuters, population, peak_delay, remain_delay) 
-  
-  
+
+
 
 # commuter_data_clean <- commuter_data %>% 
 #   clean_names() %>% 
@@ -91,7 +94,7 @@ vehicle_miles_data_clean <- vehicle_miles_data %>%
          first_state = str_extract(area, ", .."),
          first_state = str_replace(first_state, ", ", ""),
          total_dmvt = interstate_total + ofe_total + opa_total + ma_total   #exclude "unreported" dvm based on the documentation and past results. Can change this later if we decide to include this number. 
-         ) %>% 
+  ) %>% 
   group_by(area) %>% 
   mutate(dmvt_pct = total_dmvt/sum(total_dmvt)) %>%
   ungroup() %>% 
@@ -114,7 +117,7 @@ vehicle_miles_data_clean <- vehicle_miles_data %>%
 #   mutate(congestion_hours = mean(c(hours_lost_in_congestion.x, hours_lost_in_congestion.y, hours_lost_in_congestion), na.rm = T)) %>% 
 #   ungroup()
 
-  
+
 # ggplot(congestion_data, aes(x = auto_commuters_combined, y = congestion_hours)) +
 #   geom_point() +
 #   geom_smooth(method = "lm") +
@@ -144,27 +147,17 @@ congestion_data_final <- umr_2020_clean %>%
   mutate(dmvt_pct = ifelse(is.na(dmvt_pct), 1, dmvt_pct),
          state = ifelse(is.na(state), first_state, state),
          ad_auto_commuters = auto_commuters * dmvt_pct,
-         ad_population = population * dmvt_pct, # Why not use real population of each state?
+         ad_population = population * dmvt_pct,
          ad_peak_delay = peak_delay * dmvt_pct,
-         ad_remain_delay = remain_delay * dmvt_pct,
-         
-
-# May be just simply use the below, no need to calculate peak and remain (avoiding mathematically return of negative values)
-      state_total_auto_commuters = auto_commuters * dmvt_pct,
-      state_total_delay_hours = total_hours_delay * dmvt_pct,
-      state_avg_delay_hours = state_total_delay_hours/state_total_auto_commuters)
-
-
+         ad_remain_delay = remain_delay * dmvt_pct
+  )
 
 #Calculate delay hours per commuter by state
-congestion_data_summary <- congestion_data_final %>% 
+congestion_data_summary_truongJune28 <- congestion_data_final %>% 
   group_by(state) %>% 
   summarise(state_auto_commuters = sum(ad_auto_commuters),
-            state_population = sum(ad_population), # Why not use real population of each state?
+            state_population = sum(ad_population),
             state_peak_delay = sum(ad_peak_delay),
             state_remain_delay = sum(ad_remain_delay)) %>% 
-  ungroup()
-  # mutate(state_avg_delay_hours = state_peak_delay/state_auto_commuters + state_remain_delay/state_population)
-
-
-
+  ungroup() %>% 
+ mutate(state_avg_delay_hours = state_peak_delay/state_auto_commuters + state_remain_delay/state_population)

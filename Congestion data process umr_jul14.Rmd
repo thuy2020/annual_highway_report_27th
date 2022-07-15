@@ -1,0 +1,120 @@
+---
+title: "Congestion Data Calculation"
+output: html_document
+date: '2022-07-13'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(readxl)
+library(janitor)
+library(stringr)
+library(modelr)
+library(rio)
+```
+
+# UMR data 
+
+```{r}
+umr_2020 <- import("data/Copy of complete-data-2021-umr-by-tti.xlsx", sheet = "urban areas")
+vehicle_miles_data <- read_excel("data/HM-74 Daily Vehicle Miles Travelled.xlsx", sheet = "Sheet1")
+
+#Clean umr data 
+state_list <- paste0(state.abb, collapse = "|")   #use this to remove state abbreviations later
+
+umr_2020_clean <- umr_2020 %>% 
+  filter(Year == "2020") %>% 
+  rename(
+    population = Population...6,
+    auto_commuters = Auto, # original column:  Auto Commuter (000)
+    total_hours_delay = `Annual Hours of Delay`,
+    hours_delay_perAuto_commuter = `...24`, # original column: per Auto Commuter
+    first_state = Primary, 
+    urban_area = `Urban Area`,
+  ) %>% 
+  mutate(auto_commuters = as.numeric(auto_commuters)*1000,
+         population = as.numeric(population)*1000) %>% 
+  
+  select(urban_area, first_state, population, auto_commuters, total_hours_delay, hours_delay_perAuto_commuter) %>% 
+  mutate(across(population:hours_delay_perAuto_commuter, as.numeric)) %>% 
+  
+  mutate(urban_area = str_remove_all(urban_area, " City"),
+         city = str_remove_all(urban_area, state_list),    #remove state abbreviations
+         city = str_remove(city, "-+$"),
+         city = str_squish(city),
+         
+         # split first-second-third city ; first-second state--> each will have proportion of daily vehicle mile traveled corresponding to each state. 
+         first_city = str_split(city, "-", simplify = T)[,1],
+         second_city = str_split(city, "-", simplify = T)[,2],
+         third_city = str_split(city, "-", simplify = T)[,3]
+  ) 
+
+```
+
+# HM-74 Daily Vehicle Miles Travelled
+
+UMR provides data for urban area. Some areas run across states. This is to be parsed out into state data using the following steps in HM-74 Daily Vehicle Miles Travelled:
+
+* Parsing first city, first state
+* Calculate `total_dmvt`, total daily vehicle mile travelled of each urban area 
+* Calculate the percentage of daily vehicel mile travelled of each state
+ 
+```{r}
+vehicle_miles_data_clean <- vehicle_miles_data %>% 
+  clean_names() %>% 
+  mutate(first_city = str_replace(area, ",.*",""),
+         first_city = str_replace(first_city, "-.*",""),
+         first_city = str_replace(first_city, " City", ""),
+         first_state = str_extract(area, ", .."),
+         first_state = str_replace(first_state, ", ", ""),
+         total_dmvt = interstate_total + ofe_total + opa_total + ma_total   #exclude "unreported" dvm based on the documentation and past results. Can change this later if we decide to include this number. 
+  ) %>% 
+  group_by(area) %>% 
+  mutate(dmvt_pct = total_dmvt/sum(total_dmvt)) %>%
+  ungroup() %>% 
+  select(area, first_city,  first_state, state, dmvt_pct) %>% 
+  #fix some city names to match the umr data
+  mutate(first_city = replace(first_city, first_city == "Urban Honolulu", "Honolulu"),
+         first_city = replace(first_city, first_city == "Louisville/Jefferson County", "Louisville"),
+         first_city = replace(first_city, first_city == "East Stroudsburg", "East Stoudsburg"),
+         first_city = replace(first_city, first_city == "El Paso de Robles (Paso Robles)", "El Paso de Robles"),
+         first_city = replace(first_city, first_city == "Homosassa Springs", "Homosassa Spr"),
+         first_city = replace(first_city, first_city == "Round Lake Beach", "Round Lake Bch"),
+         first_state = replace(first_state, first_city == "Round Lake Bch", "WI"))
+```
+
+* Next, join UMR and HM-74. There are 134 cases of inter-state urban areas, i.e. percentage of dmvt < 1.
+* Calculate the percentage of auto commuters in each state
+* Calculate the percentage of delay hours in each state
+
+Finally:
+
+* Calculate total number of commuter in each state 
+* Calculate total delay hours in each state
+* Calculate average delay hours in each state 
+
+```{r}
+congestion_data_final <- 
+  umr_2020_clean %>% 
+  left_join(vehicle_miles_data_clean, by = c("first_city", "first_state")) %>%
+  mutate(dmvt_pct = ifelse(is.na(dmvt_pct), 1, dmvt_pct),
+         state = ifelse(is.na(state), first_state, state)) %>% 
+  select(area, state, dmvt_pct, auto_commuters, total_hours_delay, hours_delay_perAuto_commuter) %>% 
+ #filter(dmvt_pct < 1) %>% # there are 134 cases of inter-state cities
+
+  mutate(state_pct_auto_commuters = auto_commuters * dmvt_pct,
+         state_pct_delay_hours = state_pct_auto_commuters * hours_delay_perAuto_commuter) %>% 
+  group_by(state) %>% 
+  summarise(state_tot_commuter = round(sum(state_pct_auto_commuters)),
+            state_tot_delay_hours = sum(state_pct_delay_hours)) %>% 
+  mutate(state_avg_delay_hours = round(state_tot_delay_hours/state_tot_commuter,1)) %>% arrange(state_avg_delay_hours)
+
+```
+
+The result is not identical, but very similar to other method solving for delay & remain time. 
+
+```{r}
+congestion_data_summary_truongJune28 %>% select(state, state_avg_delay_hours) %>% arrange(state_avg_delay_hours)
+```
+
