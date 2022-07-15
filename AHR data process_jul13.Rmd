@@ -1,5 +1,5 @@
 ---
-title: "Untitled"
+title: "Annual Highway Report - Data Analysis"
 output: html_document
 date: '2022-07-14'
 ---
@@ -14,18 +14,7 @@ library(rio)
 options(scipen=999)
 ```
 
-# Component data
-
-## Cost of living index for later adjustment to spending numbers
-
-```{r}
-coli <- read.csv("data/coli_meric.csv") %>% 
-  clean_names() %>% 
-  select(state, coli_index) %>% 
-  mutate(coli_index = coli_index/100)
-```
-
-## HM-10: Public road length, miles by ownership
+# HM-10: Public road length, miles by ownership
 
 ```{r}
 HM_10 <- read_excel("data/hm10.xls", sheet = "A") %>% 
@@ -42,16 +31,21 @@ HM_10 <- read_excel("data/hm10.xls", sheet = "A") %>%
          SHA_miles = rural_SHA + urban_SHA) %>% 
   select(state, SHA_miles)
 
+head(HM_10)
 ```
 
-#HM-81: State highway agency-owned public roads; rural and urban miles, estimated lane-miles and daily travel
-
-Note: In California Policy Center report, the table shows "total lane miles" BUT it probably refers to dvmt in fact. 
-https://californiapolicycenter.org/californias-transportation-future-part-four-the-common-road/
+# HM-81: State highway agency-owned public roads; rural and urban miles, estimated lane-miles and daily travel
 
 * Consider 4 factors: state_urban_lane_miles, state_tot_lane_miles, state_urban_dvmt, state_tot_dvmt.
-* Calculate: percentage of urban dvmt & percentage of urban lane miles in each state
-* Indexing those percentages against national level
+* Calculate percentage of urban dvmt in each state
+* Calculate percentage of urban lane miles in each state
+* Indexing the above 2 percentages against national levels
+
+This approach is inspired by the [California Policy Center report](https://californiapolicycenter.org/californias-transportation-future-part-four-the-common-road/), which argues that: 
+**"The idea that road construction costs more in urban areas can be attributed to several interrelated factors: Land values are typically greater in densely populated areas. Construction challenges are greater in urban areas where it is more likely that existing structures may have to be acquired and demolished to permit road construction or widening. Labor costs are typically higher in urban areas. Urbanized regions also are likely to have more local restrictions on development, leading to more costly permitting processes and higher fees. There are other key factors influencing road construction costs – for example, climate and topography – but urbanization is easily quantifiable and likely the most significant of them."**
+
+However, it seems that the report got mixed up between "total lane miles" and daily miles travelled. We present here both ways of using lane miles and dmt for discussion. 
+
 
 ```{r}
 HM_81 <- read_excel("data/hm81.xls", sheet  = "A") %>% 
@@ -77,23 +71,22 @@ HM_81 <- read_excel("data/hm81.xls", sheet  = "A") %>%
   # index - relative to national level
   mutate(urban_dvmt_index =  (pct_urban_dvmt/US_pct_urban_dvmt),
          urban_lane_miles_index = (pct_urban_lane_miles/US_pct_urban_lane_miles)) %>% 
-  
   select(-c(US_pct_urban_dvmt, US_pct_urban_lane_miles))
- 
+
+head(HM_81) %>% select(1, 6:9)
 ```
 
 # SF-4: Disbursements for state-administered highways (thousands of dollars)
-Note: the 2020 numbers for some reason exactly match the 2019 numbers? 
 
 * Using 4 factors: capital disbursements, maintenance disbursements, administrative disbursements, and other disbursements (combined of Highway Law Enforcement and Safety, Interest, and Bond Retirements) 
 
-*Adjusting disbursements in 3 ways*: 
+*Adjusting each of the 4 category of disbursements in 3 ways*: 
 (Note: Numbers are multiple with 1000 before adjusted)
 * Cost of living index
 * urban_dvmt_index index
 * urban_lane_miles_index
- 
 
+Note: the 2020 numbers for some reason exactly match the 2019 numbers? 
 These adjustment impacts states' spending differently. (See graphs below for more detail)
 ```{r}
 SF_4 <- read_excel("data/sf4.xlsx", sheet = "A") %>% 
@@ -118,8 +111,13 @@ SF_4 <- read_excel("data/sf4.xlsx", sheet = "A") %>%
          other_disbursment = other_disbursment * 1000) %>% 
   filter(state %in% state.name) %>% select(-c(5:7))
 
+# Cost of living index
+coli <- read.csv("data/coli_meric.csv") %>% 
+  clean_names() %>% 
+  select(state, coli_index) %>% 
+  mutate(coli_index = coli_index/100)
 
-# Adjusted for 3 factors: cost of living, urban_dvmt_index, urban_lane_miles_index
+# 4 cat x Adjusted for 3 factors: cost of living, urban_dvmt_index, urban_lane_miles_index + keep 4 cat original -> 17 cols
 SF_4_adjusted <- SF_4 %>% 
   left_join(coli) %>% 
   left_join(HM_81 %>% select(state,  urban_dvmt_index, urban_lane_miles_index)) %>% 
@@ -128,6 +126,7 @@ SF_4_adjusted <- SF_4 %>%
   mutate(across(2:5, ~.x/urban_dvmt_index, .names = "{.col}_urban_dvmt_index")) %>% 
   mutate(across(2:5, ~.x/urban_lane_miles_index, .names = "{.col}_urban_lanemiles_index")) %>% 
   select(-c(coli_index, urban_dvmt_index, urban_lane_miles_index))
+
 ```
 
 Examples of how capital_disbursement is adjusted in 10 states that have highest/lowest capital_disbursement 
@@ -143,7 +142,7 @@ SF_4_adjusted %>% arrange(desc(capital_disbursement)) %>% slice(1:10) %>%
   theme_minimal()+
   labs(title = "Top 10 states that have highest capital_disbursement") +
   
-  theme(legend.position = "bottom",
+  theme(legend.position = "right",
         axis.text.x = element_text(angle = 30, vjust = 1, hjust=1)) 
 
   
@@ -229,15 +228,17 @@ HM64 <- HM64_rural_interstate %>%
          urban_interstate_total,
          urban_OPA_above_220,
          urban_OPA_total)
+head(HM64)
 ```
 
 
 # FI-20: Persons fatally injured in motor vehicle crashes
 
-Rural fatality category,  and urban fatality categories with each measuring fatalities on Interstates, OFA, and OPE highways.
-Total
-rural_other_fatalities: sum of minor arterials, minor collector, major collector, and local roads in rural
-urban_other_fatalities: sum of minor arterials, minor collector, major collector, and local roads in urban
+Including:
+* Rural fatality category,  and urban fatality categories with each measuring fatalities on Interstates, OFA, and OPE highways.
+* total
+* rural_other_fatalities: sum of minor arterials, minor collector, major collector, and local roads in rural
+* urban_other_fatalities: sum of minor arterials, minor collector, major collector, and local roads in urban
 
 ```{r}
 
@@ -263,11 +264,12 @@ FI_20 <- read_excel("data/fi20.xls", sheet = "A") %>%
          urban_other_fatalities = rowSums(across(13:16))) %>% # minor arterials, minor collector, major collector, and local roads in urban
   select(-c(5:8, 13:16, 18))
  
+head(FI_20)
 ```
 
 # VM-2: Annual vehicle miles
 
-NOTE: VM2 file says unit = millions, should be thousand? --> multiple each columns * 1000 ?
+NOTE: VM2 file says unit = millions, should be thousand? --> currently multiple each columns * 1000
 
 rural_other_VMT: sum of minor arterials, minor collector, major collector, and local roads in rural
 urban_other_VMT: sum of minor arterials, minor collector, major collector, and local roads in urban
@@ -294,7 +296,7 @@ VM_2 <- read_excel("data/vm2.xls", sheet = "A") %>%
   ) %>% 
   select(-c(5:8, 13:16)) %>% 
   mutate(across(2:12)*1000)
-
+head(VM_2)
 ```
 
 # Bridge data
@@ -319,6 +321,7 @@ bridge_poor <- bridge_raw[180:nrow(bridge_raw),] %>%
 
 bridge_data <- bridge_total %>% 
   left_join(bridge_poor)
+head(bridge_data)
 ```
 
 
@@ -431,9 +434,8 @@ congestion_data <- umr_2020_clean %>%
 
 #The result is not identical, but very similar to other method solving for delay & remain time. 
 #congestion_data_summary_truongJune28 %>% select(state, state_avg_delay_hours) %>% arrange(state_avg_delay_hours)
+head(congestion_data)
 ```
-
-
 
 # Joining all data 
 
@@ -465,19 +467,24 @@ colnames(AHR_data)
 
 Three methods of adjustment have substantial impact on the disbursement per unit of lane miles or VMT. 
 
-method 1: adjusted for cost of living, divided by state total daily vehicle mile travelled
-method 2: adjusted for urban_dvmt_index (percentage of urban vmt relatively to national), divided by state total daily vehicle mile travelled
-method 3: adjusted for urban_lanemiles_index (percentage of urban lane mile relatively to national), divided by state total lane miles
+method 0: no adjustment. Each category of disbursement is divided by state total daily vehicle mile travelled
+
+In the following 3 methods, each category of disbursement is first divided by the corresponding index (i.e. adjusted). 
+
+method 1: adjusted for cost of living, then divided by state total daily vehicle mile travelled
+method 2: adjusted for urban_dvmt_index (percentage of urban vmt relatively to national), then divided by state total daily vehicle mile travelled
+method 3: adjusted for urban_lanemiles_index (percentage of urban lane mile relatively to national), then divided by state total lane miles
 
 Method 3 has the strongest effect. 
 
 ```{r}
   
   disbursment_adjusted <- AHR_data %>% 
-  # disbursement not adjusted
+  # method 0: disbursement not adjusted
   mutate(capital_disbursement = capital_disbursement/state_tot_dvmt,
          maintenance_disbursement = maintenance_disbursement / state_tot_dvmt,
-        admin_disbursement = admin_disbursement / state_tot_dvmt) %>% 
+        admin_disbursement = admin_disbursement / state_tot_dvmt, 
+        other_disbursment = other_disbursment/state_tot_dvmt) %>% 
   
   # 3 methods of disbursement adjusting  
   mutate(
@@ -485,19 +492,27 @@ Method 3 has the strongest effect.
     capital_disbursement_pervmt_coli = capital_disbursement_coli_index / state_tot_dvmt,
     maintenance_disbursement_pervmt_coli = maintenance_disbursement_coli_index / state_tot_dvmt,
     admin_disbursement_pervmt_coli = admin_disbursement_coli_index / state_tot_dvmt,
+    other_disbursment_pervmt_coli = other_disbursment_coli_index/ state_tot_dvmt,
     
     # method 2: adjusted for urban_dvmt_index (percentage of urban lane mile relatively to national)
     capital_disbursement_per_vmt = capital_disbursement_urban_dvmt_index / state_tot_dvmt,
     maintenance_disbursement_per_vmt = maintenance_disbursement_urban_dvmt_index / state_tot_dvmt,
     admin_disbursement_per_vmt = admin_disbursement_urban_dvmt_index / state_tot_dvmt,
+    other_disbursment_per_vmt = other_disbursment_urban_dvmt_index / state_tot_dvmt,
     
     # method 3: adjusted for urban_lanemiles_index (percentage of urban lane mile relatively to national)
     capital_disbursement_per_lm = capital_disbursement_urban_lanemiles_index / state_tot_lane_miles,
     maintenance_disbursement_per_lm = maintenance_disbursement_urban_lanemiles_index / state_tot_lane_miles,
-    admin_disbursement_per_lm = admin_disbursement_urban_lanemiles_index / state_tot_lane_miles) %>% 
-  select(state, capital_disbursement, maintenance_disbursement, admin_disbursement,
-         capital_disbursement_pervmt_coli: admin_disbursement_per_lm)
+    admin_disbursement_per_lm = admin_disbursement_urban_lanemiles_index / state_tot_lane_miles,
+    other_disbursment_per_lm = other_disbursment_urban_lanemiles_index/ state_tot_lane_miles) %>% 
+  
+  select(state, capital_disbursement : other_disbursment,
+         capital_disbursement_pervmt_coli: other_disbursment_per_lm)
+```
 
+Viewing how different methods of adjustment impact capital_disbursement per unit of VMT / or unit of lane miles
+
+```{r}
   
 disbursment_adjusted %>% arrange(desc(capital_disbursement)) %>% slice(1:10) %>% 
   select(state, capital_disbursement, capital_disbursement_pervmt_coli, capital_disbursement_per_vmt, capital_disbursement_per_lm) %>% 
@@ -508,7 +523,7 @@ disbursment_adjusted %>% arrange(desc(capital_disbursement)) %>% slice(1:10) %>%
 
   scale_fill_manual(values = wesanderson::wes_palette("Royal1")) +
   theme_minimal()+
-  labs(title = "Top 10 states that have highest capital_disbursement PER VMT") +
+  labs(title = "Top 10 states that have highest capital_disbursement PER unit of vmt/ lane miles") +
   
   theme(legend.position = "right",
         axis.text.x = element_text(angle = 30, vjust = 1, hjust=1)) 
@@ -523,7 +538,7 @@ disbursment_adjusted %>% arrange(capital_disbursement) %>% slice(1:10) %>%
 
   scale_fill_manual(values = wesanderson::wes_palette("Royal1")) +
   theme_minimal()+
-  labs(title = "Top 10 states that have lowest capital_disbursement PER VMT") +
+  labs(title = "Top 10 states that have lowest capital_disbursement PER unit of vmt/ lane miles") +
   
   theme(legend.position = "right",
         axis.text.x = element_text(angle = 30, vjust = 1, hjust=1)) 
@@ -551,6 +566,8 @@ metrics_9others <- AHR_data %>%
     urban_fatalities_per_100m_VMT = urban_total_fatalities / urban_total_VMT * 100,
   ) %>% 
   select(state, SHA_ratio, poor_bridges_percent, rural_interstate_poor_percent, urban_interstate_poor_percent, rural_OPA_poor_percent, urban_OPA_poor_percent, rural_fatalities_per_100m_VMT, urban_fatalities_per_100m_VMT, state_avg_delay_hours)
+
+head(metrics_9others)
 ```
 
 ## Calculate overall scores
@@ -561,7 +578,7 @@ With 3 new ways of disbursement adjusting, plus a case when disbursement is kept
 
 ```{r}
 ## Method 0: Not adjusting for disbursement
-method0 <- disbursment_adjusted %>% select(state, capital_disbursement, maintenance_disbursement, admin_disbursement) %>% left_join(metrics_9others) %>% 
+method0 <- disbursment_adjusted %>% select(state, capital_disbursement, maintenance_disbursement, admin_disbursement, other_disbursment) %>% left_join(metrics_9others) %>% 
   pivot_longer(cols = 2:13,
                names_to = "metrics",
                values_to = "value") %>% 
@@ -577,9 +594,9 @@ method0 <- disbursment_adjusted %>% select(state, capital_disbursement, maintena
   select(state, overall_rank_method0)
 
 # method 1: adjusted for cost of living - coli index
-method1 <- disbursment_adjusted %>% select(state, capital_disbursement_pervmt_coli, maintenance_disbursement_pervmt_coli, admin_disbursement_pervmt_coli) %>% 
+method1 <- disbursment_adjusted %>% select(state, capital_disbursement_pervmt_coli, maintenance_disbursement_pervmt_coli, admin_disbursement_pervmt_coli, other_disbursment_pervmt_coli) %>% 
   left_join(metrics_9others) %>% 
-  pivot_longer(cols = 2:13,
+  pivot_longer(cols = 2:14,
                names_to = "metrics",
                values_to = "value") %>% 
   group_by(metrics) %>% 
@@ -595,9 +612,9 @@ method1 <- disbursment_adjusted %>% select(state, capital_disbursement_pervmt_co
 
 # method 2: adjusted for urban_dvmt_index (percentage of urban lane mile relatively to national)
 
-method2 <- disbursment_adjusted %>% select(state, capital_disbursement_per_vmt, maintenance_disbursement_per_vmt, admin_disbursement_per_vmt) %>% 
+method2 <- disbursment_adjusted %>% select(state, capital_disbursement_per_vmt, maintenance_disbursement_per_vmt, admin_disbursement_per_vmt, other_disbursment_per_vmt) %>% 
   left_join(metrics_9others) %>% 
-  pivot_longer(cols = 2:13,
+  pivot_longer(cols = 2:14,
                names_to = "metrics",
                values_to = "value") %>% 
   group_by(metrics) %>% 
@@ -614,9 +631,9 @@ method2 <- disbursment_adjusted %>% select(state, capital_disbursement_per_vmt, 
 
 # method 3: adjusted for urban_lanemiles_index (percentage of urban lane mile relatively to national)
 
-method3 <- disbursment_adjusted %>% select(state, capital_disbursement_per_lm, maintenance_disbursement_per_lm, admin_disbursement_per_lm) %>% 
+method3 <- disbursment_adjusted %>% select(state, capital_disbursement_per_lm, maintenance_disbursement_per_lm, admin_disbursement_per_lm, other_disbursment_per_lm) %>% 
   left_join(metrics_9others) %>% 
-  pivot_longer(cols = 2:13,
+  pivot_longer(cols = 2:14,
                names_to = "metrics",
                values_to = "value") %>% 
   group_by(metrics) %>% 
@@ -640,10 +657,10 @@ ranking_data <- method0 %>% left_join(method1) %>% left_join(method2) %>% left_j
   pivot_longer(cols = 2:6, 
                names_to = "rank",
                values_to = "value") 
-
+head(metrics_9others)
 ```
 
-## Viewing differences in ranking 
+# Viewing differences in ranking 
 ```{r}
 library(patchwork)
 
@@ -653,21 +670,25 @@ ranking_data %>% slice(1:50) %>%
   coord_flip() +
   theme_minimal() +
   labs(title = "Comparison: 26th report ranking vs. new methods") +
-  theme(legend.position = "none") +
-  scale_fill_manual(values = wesanderson::wes_palette("Royal2")) -> p1
+  theme(legend.position = "right") +
+  scale_fill_manual(values = wesanderson::wes_palette("Royal2")) 
 
 ranking_data %>% slice(51:100) %>% 
   ggplot(aes(state, value, group = rank, fill = rank)) +
   geom_col(position = "dodge") +
   coord_flip() +
   theme_minimal() +
-  #labs(title = "Comparison: 26th report ranking vs. new methods") +
-  theme(legend.position = "bottom") +
-  scale_fill_manual(values = wesanderson::wes_palette("Royal2")) -> p2
+  labs(title = "Comparison: 26th report ranking vs. new methods") +
+  theme(legend.position = "right") +
+  scale_fill_manual(values = wesanderson::wes_palette("Royal2")) 
 
-p1 + p2
+
 ```
-## Letter rating 
+# Letter rating 
+
+We're aware that ranking is quite sensitive to different choices of methodology. One option worth consideration is using letter rating instead of numeric ranking. 
+For the lack of "objective" criteria to assign letters to the values, and also for simplicity, the overall ranking is binned in 10 bins, from A+ to D. 
+
 ```{r}
 final_ranking_letters <- ranking_data %>% arrange(state) %>% 
   mutate(letter_rating = case_when(value <= 5 ~ "A+", 

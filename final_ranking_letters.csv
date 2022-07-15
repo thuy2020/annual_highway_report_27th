@@ -1,143 +1,141 @@
 "","state","letter_rating","overall_rank_method0","overall_rank_method1","overall_rank_method2","overall_rank_method3","report_26th_rank"
-"1","Alabama","A-",12,NA,14,12,NA
-"2","Alabama","B+",NA,18,NA,NA,NA
+"1","Alabama","A",9,NA,NA,10,NA
+"2","Alabama","A-",NA,15,12,NA,NA
 "3","Alabama","B-",NA,NA,NA,NA,28
 "4","Alaska","D",50,50,50,50,48
-"5","Arizona","B+",19,20,16,NA,NA
-"6","Arizona","B",NA,NA,NA,22,NA
-"7","Arizona","B-",NA,NA,NA,NA,29
-"8","Arkansas","B+",20,NA,20,NA,17
-"9","Arkansas","B",NA,22,NA,NA,NA
-"10","Arkansas","A-",NA,NA,NA,15,NA
-"11","California","C-",43,43,NA,NA,45
-"12","California","C",NA,NA,39,NA,NA
-"13","California","D",NA,NA,NA,49,NA
-"14","Colorado","C-",41,NA,NA,43,NA
-"15","Colorado","C",NA,39,NA,NA,37
-"16","Colorado","C+",NA,NA,33,NA,NA
-"17","Connecticut","A",8,NA,NA,7,NA
-"18","Connecticut","A+",NA,2,3,NA,NA
-"19","Connecticut","C+",NA,NA,NA,NA,31
-"20","Delaware","D",49,49,47,NA,NA
-"21","Delaware","B-",NA,NA,NA,30,NA
-"22","Delaware","C-",NA,NA,NA,NA,44
-"23","Florida","A",7,7,NA,10,NA
-"24","Florida","A+",NA,NA,4,NA,NA
-"25","Florida","C-",NA,NA,NA,NA,41
-"26","Georgia","A+",2,4,2,5,NA
-"27","Georgia","A-",NA,NA,NA,NA,14
-"28","Hawaii","D",48,47,NA,48,47
-"29","Hawaii","C-",NA,NA,45,NA,NA
-"30","Idaho","B-",30,29,NA,NA,NA
-"31","Idaho","C+",NA,NA,31,NA,NA
-"32","Idaho","C",NA,NA,NA,36,NA
-"33","Idaho","A",NA,NA,NA,NA,8
-"34","Illinois","C+",34,35,NA,NA,NA
-"35","Illinois","B-",NA,NA,26,27,NA
-"36","Illinois","C",NA,NA,NA,NA,40
-"37","Indiana","B",22,24,23,24,NA
-"38","Indiana","C+",NA,NA,NA,NA,32
-"39","Iowa","C+",33,NA,35,33,NA
-"40","Iowa","C",NA,36,NA,NA,NA
-"41","Iowa","B",NA,NA,NA,NA,22
-"42","Kansas","A",9,10,NA,NA,7
-"43","Kansas","B+",NA,NA,17,NA,NA
-"44","Kansas","A-",NA,NA,NA,13,NA
-"45","Kentucky","A+",4,5,NA,NA,4
-"46","Kentucky","A",NA,NA,7,8,NA
-"47","Louisiana","C",39,NA,NA,37,NA
-"48","Louisiana","C-",NA,41,NA,NA,NA
-"49","Louisiana","C+",NA,NA,34,NA,35
-"50","Maine","C",36,NA,40,NA,NA
-"51","Maine","C+",NA,34,NA,34,33
-"52","Maryland","B",25,23,NA,21,NA
-"53","Maryland","B+",NA,NA,18,NA,NA
-"54","Maryland","C",NA,NA,NA,NA,38
-"55","Massachusetts","B",23,21,NA,NA,NA
-"56","Massachusetts","A-",NA,NA,15,NA,NA
-"57","Massachusetts","B+",NA,NA,NA,19,NA
-"58","Massachusetts","C-",NA,NA,NA,NA,43
-"59","Michigan","C+",31,32,NA,NA,34
-"60","Michigan","B",NA,NA,25,NA,NA
-"61","Michigan","B-",NA,NA,NA,28,NA
-"62","Minnesota","A+",5,NA,NA,NA,NA
-"63","Minnesota","A",NA,6,6,NA,NA
-"64","Minnesota","A-",NA,NA,NA,14,NA
-"65","Minnesota","B+",NA,NA,NA,NA,18
-"66","Mississippi","B+",16,19,19,16,NA
-"67","Mississippi","A-",NA,NA,NA,NA,15
-"68","Missouri","A",6,8,8,9,NA
-"69","Missouri","A+",NA,NA,NA,NA,3
-"70","Montana","B-",28,27,NA,NA,NA
-"71","Montana","C-",NA,NA,41,NA,NA
-"72","Montana","C+",NA,NA,NA,31,NA
-"73","Montana","A-",NA,NA,NA,NA,11
-"74","Nebraska","B-",27,28,28,NA,NA
-"75","Nebraska","C+",NA,NA,NA,32,NA
-"76","Nebraska","B",NA,NA,NA,NA,21
-"77","Nevada","B+",17,NA,NA,20,20
-"78","Nevada","A-",NA,14,12,NA,NA
-"79","New Hampshire","B+",18,NA,NA,17,19
-"80","New Hampshire","A-",NA,15,NA,NA,NA
-"81","New Hampshire","B",NA,NA,24,NA,NA
-"82","New Jersey","C-",42,42,NA,42,NA
-"83","New Jersey","C+",NA,NA,32,NA,NA
-"84","New Jersey","D",NA,NA,NA,NA,50
-"85","New Mexico","C",37,38,NA,39,NA
-"86","New Mexico","C-",NA,NA,43,NA,NA
-"87","New Mexico","B-",NA,NA,NA,NA,27
-"88","New York","D",46,NA,NA,NA,46
-"89","New York","C",NA,40,37,NA,NA
-"90","New York","C-",NA,NA,NA,41,NA
-"91","North Carolina","A-",15,NA,NA,NA,NA
-"92","North Carolina","B+",NA,17,NA,NA,NA
-"93","North Carolina","A",NA,NA,10,NA,NA
-"94","North Carolina","A+",NA,NA,NA,2,5
-"95","North Dakota","A-",13,13,NA,NA,NA
-"96","North Dakota","B-",NA,NA,29,NA,NA
-"97","North Dakota","B",NA,NA,NA,23,NA
-"98","North Dakota","A+",NA,NA,NA,NA,1
-"99","Ohio","B-",26,26,NA,NA,NA
-"100","Ohio","B",NA,NA,21,NA,24
-"101","Ohio","B+",NA,NA,NA,18,NA
-"102","Oklahoma","C",40,NA,NA,NA,36
-"103","Oklahoma","C-",NA,44,42,44,NA
-"104","Oregon","B",21,NA,22,NA,25
-"105","Oregon","A-",NA,11,NA,NA,NA
-"106","Oregon","B-",NA,NA,NA,26,NA
-"107","Pennsylvania","C-",44,NA,NA,NA,NA
-"108","Pennsylvania","D",NA,46,NA,NA,NA
-"109","Pennsylvania","C",NA,NA,38,NA,39
-"110","Pennsylvania","C+",NA,NA,NA,35,NA
-"111","Rhode Island","C-",45,45,NA,NA,NA
-"112","Rhode Island","C",NA,NA,36,40,NA
-"113","Rhode Island","D",NA,NA,NA,NA,49
-"114","South Carolina","A",10,9,9,NA,NA
-"115","South Carolina","A+",NA,NA,NA,4,NA
-"116","South Carolina","B",NA,NA,NA,NA,23
-"117","South Dakota","C+",32,33,NA,NA,NA
-"118","South Dakota","D",NA,NA,48,NA,NA
-"119","South Dakota","C-",NA,NA,NA,45,NA
-"120","South Dakota","A",NA,NA,NA,NA,9
-"121","Tennessee","A+",3,3,5,NA,NA
-"122","Tennessee","A",NA,NA,NA,6,NA
-"123","Tennessee","B+",NA,NA,NA,NA,19
-"124","Texas","A-",11,NA,11,11,NA
-"125","Texas","B+",NA,16,NA,NA,16
-"126","Utah","A+",1,1,1,3,NA
-"127","Utah","A",NA,NA,NA,NA,6
-"128","Vermont","C+",35,31,NA,NA,NA
-"129","Vermont","D",NA,NA,49,47,NA
-"130","Vermont","A-",NA,NA,NA,NA,13
-"131","Virginia","A-",14,12,13,NA,NA
-"132","Virginia","A+",NA,NA,NA,1,2
-"133","Washington","C",38,37,NA,NA,NA
-"134","Washington","B-",NA,NA,30,NA,30
-"135","Washington","D",NA,NA,NA,46,NA
-"136","West Virginia","D",47,48,46,NA,NA
-"137","West Virginia","C",NA,NA,NA,38,NA
-"138","West Virginia","B-",NA,NA,NA,NA,29
-"139","Wisconsin","B-",29,30,27,29,26
-"140","Wyoming","B",24,25,NA,25,NA
-"141","Wyoming","C-",NA,NA,44,NA,NA
-"142","Wyoming","A-",NA,NA,NA,NA,12
+"5","Arizona","B+",20,18,NA,NA,NA
+"6","Arizona","A-",NA,NA,15,NA,NA
+"7","Arizona","B",NA,NA,NA,22,NA
+"8","Arizona","B-",NA,NA,NA,NA,29
+"9","Arkansas","B+",17,19,17,NA,17
+"10","Arkansas","A-",NA,NA,NA,12,NA
+"11","California","C-",42,41,NA,NA,45
+"12","California","C",NA,NA,36,NA,NA
+"13","California","D",NA,NA,NA,47,NA
+"14","Colorado","C",38,39,NA,NA,37
+"15","Colorado","C+",NA,NA,32,NA,NA
+"16","Colorado","C-",NA,NA,NA,41,NA
+"17","Connecticut","A-",15,NA,NA,NA,NA
+"18","Connecticut","A",NA,7,NA,9,NA
+"19","Connecticut","A+",NA,NA,5,NA,NA
+"20","Connecticut","C+",NA,NA,NA,NA,31
+"21","Delaware","D",49,49,48,NA,NA
+"22","Delaware","B-",NA,NA,NA,27,NA
+"23","Delaware","C-",NA,NA,NA,NA,44
+"24","Florida","A",8,9,NA,NA,NA
+"25","Florida","A+",NA,NA,4,NA,NA
+"26","Florida","A-",NA,NA,NA,13,NA
+"27","Florida","C-",NA,NA,NA,NA,41
+"28","Georgia","A+",3,3,3,5,NA
+"29","Georgia","A-",NA,NA,NA,NA,14
+"30","Hawaii","D",46,NA,NA,NA,47
+"31","Hawaii","C-",NA,44,42,45,NA
+"32","Idaho","B-",27,28,NA,NA,NA
+"33","Idaho","C+",NA,NA,31,NA,NA
+"34","Idaho","C",NA,NA,NA,38,NA
+"35","Idaho","A",NA,NA,NA,NA,8
+"36","Illinois","C+",33,NA,NA,NA,NA
+"37","Illinois","C",NA,36,NA,NA,40
+"38","Illinois","B-",NA,NA,26,NA,NA
+"39","Illinois","B",NA,NA,NA,24,NA
+"40","Indiana","B",21,22,NA,NA,NA
+"41","Indiana","B+",NA,NA,19,18,NA
+"42","Indiana","C+",NA,NA,NA,NA,32
+"43","Iowa","C+",32,35,34,32,NA
+"44","Iowa","B",NA,NA,NA,NA,22
+"45","Kansas","B+",16,NA,NA,NA,NA
+"46","Kansas","B",NA,21,25,23,NA
+"47","Kansas","A",NA,NA,NA,NA,7
+"48","Kentucky","A+",4,5,NA,NA,4
+"49","Kentucky","A",NA,NA,9,7,NA
+"50","Louisiana","C",39,40,NA,NA,NA
+"51","Louisiana","C+",NA,NA,33,35,35
+"52","Maine","C+",35,34,NA,34,33
+"53","Maine","C",NA,NA,37,NA,NA
+"54","Maryland","B-",28,NA,NA,26,NA
+"55","Maryland","B",NA,25,NA,NA,NA
+"56","Maryland","B+",NA,NA,20,NA,NA
+"57","Maryland","C",NA,NA,NA,NA,38
+"58","Massachusetts","C+",34,NA,NA,33,NA
+"59","Massachusetts","B-",NA,29,NA,NA,NA
+"60","Massachusetts","B",NA,NA,21,NA,NA
+"61","Massachusetts","C-",NA,NA,NA,NA,43
+"62","Michigan","B-",29,NA,NA,NA,NA
+"63","Michigan","C+",NA,31,NA,NA,34
+"64","Michigan","B",NA,NA,24,25,NA
+"65","Minnesota","A",6,6,7,NA,NA
+"66","Minnesota","A-",NA,NA,NA,15,NA
+"67","Minnesota","B+",NA,NA,NA,NA,18
+"68","Mississippi","A-",11,NA,NA,14,15
+"69","Mississippi","B+",NA,16,16,NA,NA
+"70","Missouri","A",7,8,10,8,NA
+"71","Missouri","A+",NA,NA,NA,NA,3
+"72","Montana","B",25,24,NA,NA,NA
+"73","Montana","C",NA,NA,39,NA,NA
+"74","Montana","B-",NA,NA,NA,29,NA
+"75","Montana","A-",NA,NA,NA,NA,11
+"76","Nebraska","B",23,NA,NA,NA,21
+"77","Nebraska","B-",NA,26,28,30,NA
+"78","Nevada","B+",18,NA,NA,19,20
+"79","Nevada","A-",NA,13,13,NA,NA
+"80","New Hampshire","B+",19,NA,NA,17,19
+"81","New Hampshire","A-",NA,14,NA,NA,NA
+"82","New Hampshire","B",NA,NA,23,NA,NA
+"83","New Jersey","D",48,48,NA,49,50
+"84","New Jersey","C-",NA,NA,45,NA,NA
+"85","New Mexico","C",37,38,40,39,NA
+"86","New Mexico","B-",NA,NA,NA,NA,27
+"87","New York","D",47,47,46,48,46
+"88","North Carolina","A-",12,12,NA,NA,NA
+"89","North Carolina","A",NA,NA,8,NA,NA
+"90","North Carolina","A+",NA,NA,NA,3,5
+"91","North Dakota","A",10,10,NA,NA,NA
+"92","North Dakota","B-",NA,NA,30,NA,NA
+"93","North Dakota","B+",NA,NA,NA,20,NA
+"94","North Dakota","A+",NA,NA,NA,NA,1
+"95","Ohio","B",24,NA,NA,NA,24
+"96","Ohio","B-",NA,27,NA,NA,NA
+"97","Ohio","B+",NA,NA,18,16,NA
+"98","Oklahoma","C-",41,42,41,43,NA
+"99","Oklahoma","C",NA,NA,NA,NA,36
+"100","Oregon","B-",26,NA,NA,NA,NA
+"101","Oregon","B+",NA,20,NA,NA,NA
+"102","Oregon","B",NA,NA,22,NA,25
+"103","Oregon","C+",NA,NA,NA,31,NA
+"104","Pennsylvania","C-",45,45,NA,NA,NA
+"105","Pennsylvania","C",NA,NA,38,37,39
+"106","Rhode Island","C-",43,43,NA,NA,NA
+"107","Rhode Island","C+",NA,NA,35,NA,NA
+"108","Rhode Island","C",NA,NA,NA,40,NA
+"109","Rhode Island","D",NA,NA,NA,NA,49
+"110","South Carolina","A+",5,4,NA,2,NA
+"111","South Carolina","A",NA,NA,6,NA,NA
+"112","South Carolina","B",NA,NA,NA,NA,23
+"113","South Dakota","B-",30,30,NA,NA,NA
+"114","South Dakota","D",NA,NA,47,NA,NA
+"115","South Dakota","C-",NA,NA,NA,42,NA
+"116","South Dakota","A",NA,NA,NA,NA,9
+"117","Tennessee","A+",1,2,2,4,NA
+"118","Tennessee","B+",NA,NA,NA,NA,19
+"119","Texas","A-",13,NA,11,11,NA
+"120","Texas","B+",NA,17,NA,NA,16
+"121","Utah","A+",2,1,1,NA,NA
+"122","Utah","A",NA,NA,NA,6,6
+"123","Vermont","C",36,NA,NA,NA,NA
+"124","Vermont","C+",NA,33,NA,NA,NA
+"125","Vermont","D",NA,NA,49,46,NA
+"126","Vermont","A-",NA,NA,NA,NA,13
+"127","Virginia","A-",14,11,14,NA,NA
+"128","Virginia","A+",NA,NA,NA,1,2
+"129","Washington","C",40,37,NA,NA,NA
+"130","Washington","B-",NA,NA,29,NA,30
+"131","Washington","C-",NA,NA,NA,44,NA
+"132","West Virginia","C-",44,NA,44,NA,NA
+"133","West Virginia","D",NA,46,NA,NA,NA
+"134","West Virginia","C",NA,NA,NA,36,NA
+"135","West Virginia","B-",NA,NA,NA,NA,29
+"136","Wisconsin","C+",31,32,NA,NA,NA
+"137","Wisconsin","B-",NA,NA,27,28,26
+"138","Wyoming","B",22,23,NA,21,NA
+"139","Wyoming","C-",NA,NA,43,NA,NA
+"140","Wyoming","A-",NA,NA,NA,NA,12
